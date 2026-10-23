@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 use Illuminate\Support\Str;
 
 return [
@@ -47,7 +49,7 @@ return [
     |
     */
 
-    'encrypt' => env('SESSION_ENCRYPT', false),
+    'encrypt' => env('SESSION_ENCRYPT', true),
 
     /*
     |--------------------------------------------------------------------------
@@ -169,7 +171,7 @@ return [
     |
     */
 
-    'secure' => env('SESSION_SECURE_COOKIE'),
+    'secure' => env('SESSION_SECURE_COOKIE', env('APP_ENV') === 'production'),
 
     /*
     |--------------------------------------------------------------------------

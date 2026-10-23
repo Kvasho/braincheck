@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Http\Middleware;
 
 use Closure;
@@ -16,7 +18,10 @@ class HandleAppearance
      */
     public function handle(Request $request, Closure $next): Response
     {
-        View::share('appearance', $request->cookie('appearance') ?? 'system');
+        // The appearance cookie is not encrypted, so only accept known values. Dark is the default.
+        $appearance = $request->cookie('appearance');
+
+        View::share('appearance', in_array($appearance, ['light', 'dark', 'system'], true) ? $appearance : 'dark');
 
         return $next($request);
     }

@@ -1,7 +1,11 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Database\Factories;
 
+use App\Actions\Users\AssignInitialRole;
+use App\Enums\Role;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Facades\Hash;
@@ -43,6 +47,42 @@ class UserFactory extends Factory
     {
         return $this->state(fn (array $attributes) => [
             'email_verified_at' => null,
+        ]);
+    }
+
+    /**
+     * Give the user a role (roles must be synced first: RolesAndPermissionsSeeder).
+     */
+    public function withRole(Role $role): static
+    {
+        return $this->afterCreating(function (User $user) use ($role): void {
+            app(AssignInitialRole::class)->handle($user, $role);
+        });
+    }
+
+    public function admin(): static
+    {
+        return $this->withRole(Role::Admin);
+    }
+
+    public function teacher(): static
+    {
+        return $this->withRole(Role::Teacher);
+    }
+
+    public function student(): static
+    {
+        return $this->withRole(Role::Student);
+    }
+
+    /**
+     * Indicate that the user has been blocked.
+     */
+    public function blocked(string $reason = 'Test block'): static
+    {
+        return $this->state(fn (array $attributes) => [
+            'blocked_at' => now(),
+            'blocked_reason' => $reason,
         ]);
     }
 

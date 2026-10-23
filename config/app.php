@@ -1,5 +1,9 @@
 <?php
 
+declare(strict_types=1);
+
+use App\Enums\Locale;
+
 return [
 
     /*
@@ -78,9 +82,10 @@ return [
     |
     */
 
-    'locale' => env('APP_LOCALE', 'en'),
+    // Supported locales live in App\Enums\Locale (single source of truth); not env-configurable.
+    'locale' => Locale::default()->value,
 
-    'fallback_locale' => env('APP_FALLBACK_LOCALE', 'en'),
+    'fallback_locale' => Locale::fallback()->value,
 
     'faker_locale' => env('APP_FAKER_LOCALE', 'en_US'),
 

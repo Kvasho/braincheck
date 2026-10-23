@@ -10,21 +10,28 @@
     "license": "MIT",
     "require": {
         "php": "^8.3",
+        "barryvdh/laravel-dompdf": "^3.1",
+        "brick/math": "^1.0",
         "inertiajs/inertia-laravel": "^3.0",
         "laravel/chisel": "^0.1.0",
         "laravel/fortify": "^1.37.2",
         "laravel/framework": "^13.17",
         "laravel/tinker": "^3.0",
-        "laravel/wayfinder": "^0.1.14"
+        "laravel/wayfinder": "^0.1.14",
+        "maatwebsite/excel": "^4.0",
+        "mews/purifier": "^3.4",
+        "spatie/laravel-permission": "^8.3"
     },
     "require-dev": {
         "fakerphp/faker": "^1.24",
-        "larastan/larastan": "^3.9",
+        "larastan/larastan": "^3.13",
+        "laravel-lang/common": "^6.8",
         "laravel/boost": "*",
         "laravel/pail": "^1.2.5",
         "laravel/pao": "^1.0.6",
         "laravel/pint": "^1.27",
         "laravel/sail": "^1.53",
+        "laravel/telescope": "^5.26",
         "mockery/mockery": "^1.6",
         "nunomaduro/collision": "^8.9.3",
         "pestphp/pest": "^4.7",
@@ -60,6 +67,13 @@
         ],
         "lint:check": [
             "pint --parallel --test"
+        ],
+        "check": [
+            "Composer\\Config::disableProcessTimeout",
+            "@php artisan config:clear --ansi",
+            "pint --test",
+            "phpstan analyse",
+            "pest"
         ],
         "ci:check": [
             "Composer\\Config::disableProcessTimeout",
@@ -98,7 +112,9 @@
     },
     "extra": {
         "laravel": {
-            "dont-discover": [],
+            "dont-discover": [
+                "laravel/telescope"
+            ],
             "installer": {
                 "post-create-project": []
             }

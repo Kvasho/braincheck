@@ -1,4 +1,6 @@
+import type { AppLocale } from '@/hooks/use-translation';
 import type { Auth } from '@/types/auth';
+import type { NavBadge } from '@/types/navigation';
 
 declare module 'react' {
     interface InputHTMLAttributes<T> {
@@ -11,7 +13,12 @@ declare module '@inertiajs/core' {
         sharedPageProps: {
             name: string;
             auth: Auth;
+            locale: AppLocale;
+            locales: { value: AppLocale; label: string }[];
+            translations: Record<string, string>;
+            flash: { status: string | null };
             sidebarOpen: boolean;
+            navBadges: Partial<Record<NavBadge, number>>;
             [key: string]: unknown;
         };
     }

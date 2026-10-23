@@ -10,16 +10,19 @@ export function useInitials(): GetInitialsFn {
     return useCallback((fullName: string): string => {
         const names = fullName.trim().split(/\s+/u).filter(Boolean);
 
-        if (names.length === 0) {
+        const first = names[0];
+        const last = names.at(-1);
+
+        if (first === undefined || last === undefined) {
             return '';
         }
 
         if (names.length === 1) {
-            return getInitial(names[0]).toUpperCase();
+            return getInitial(first).toUpperCase();
         }
 
-        const firstInitial = getInitial(names[0]);
-        const lastInitial = getInitial(names[names.length - 1]);
+        const firstInitial = getInitial(first);
+        const lastInitial = getInitial(last);
 
         return `${firstInitial}${lastInitial}`.toUpperCase();
     }, []);

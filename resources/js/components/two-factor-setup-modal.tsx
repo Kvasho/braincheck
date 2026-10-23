@@ -18,10 +18,10 @@ import {
     InputOTPSlot,
 } from '@/components/ui/input-otp';
 import { Spinner } from '@/components/ui/spinner';
-import { useAppearance } from '@/hooks/use-appearance';
 import { useClipboard } from '@/hooks/use-clipboard';
 import { OTP_MAX_LENGTH } from '@/hooks/use-two-factor-auth';
 import { confirm } from '@/routes/two-factor';
+import { useTranslation } from '@/hooks/use-translation';
 
 function GridScanIcon() {
     return (
@@ -62,8 +62,8 @@ function TwoFactorSetupStep({
     onNextStep: () => void;
     errors: string[];
 }) {
-    const { resolvedAppearance } = useAppearance();
     const [copiedText, copy] = useClipboard();
+    const { t } = useTranslation();
     const IconComponent = copiedText === manualSetupKey ? Check : Copy;
 
     return (
@@ -76,17 +76,16 @@ function TwoFactorSetupStep({
                         <div className="mx-auto aspect-square w-64 rounded-lg border border-border">
                             <div className="z-10 flex h-full w-full items-center justify-center p-5">
                                 {qrCodeSvg ? (
-                                    <div
-                                        className="aspect-square w-full rounded-lg bg-white p-2 [&_svg]:size-full"
-                                        dangerouslySetInnerHTML={{
-                                            __html: qrCodeSvg,
-                                        }}
-                                        style={{
-                                            filter:
-                                                resolvedAppearance === 'dark'
-                                                    ? 'invert(1) brightness(1.5)'
-                                                    : undefined,
-                                        }}
+                                    // Rendered as an <img> data URI instead of injected markup:
+                                    // SVG inside <img> can never run scripts.
+                                    <img
+                                        src={`data:image/svg+xml;charset=utf-8,${encodeURIComponent(qrCodeSvg)}`}
+                                        alt={t(
+                                            'Two-factor authentication QR code',
+                                        )}
+                                        // synapse-allow-color: QR codes must stay dark-on-white in every
+                                        // theme (inverted codes fail in many authenticator apps).
+                                        className="aspect-square w-full rounded-lg bg-white p-2"
                                     />
                                 ) : (
                                     <Spinner />
@@ -104,7 +103,7 @@ function TwoFactorSetupStep({
                     <div className="relative flex w-full items-center justify-center">
                         <div className="absolute inset-0 top-1/2 h-px w-full bg-border" />
                         <span className="relative bg-card px-2 py-1">
-                            or, enter the code manually
+                            {t('or, enter the code manually')}
                         </span>
                     </div>
 
@@ -124,6 +123,7 @@ function TwoFactorSetupStep({
                                     />
                                     <button
                                         onClick={() => copy(manualSetupKey)}
+                                        aria-label={t('Copy setup key')}
                                         className="border-l border-border px-3 hover:bg-muted"
                                     >
                                         <IconComponent className="w-4" />
@@ -146,6 +146,7 @@ function TwoFactorVerificationStep({
     onBack: () => void;
 }) {
     const [code, setCode] = useState<string>('');
+    const { t } = useTranslation();
     const pinInputContainerRef = useRef<HTMLDivElement>(null);
 
     useEffect(() => {
@@ -210,7 +211,7 @@ function TwoFactorVerificationStep({
                                 onClick={onBack}
                                 disabled={processing}
                             >
-                                Back
+                                {t('Back')}
                             </Button>
                             <Button
                                 type="submit"
@@ -219,7 +220,7 @@ function TwoFactorVerificationStep({
                                     processing || code.length < OTP_MAX_LENGTH
                                 }
                             >
-                                Confirm
+                                {t('Confirm')}
                             </Button>
                         </div>
                     </div>
@@ -254,6 +255,7 @@ export default function TwoFactorSetupModal({
 }: Props) {
     const [showVerificationStep, setShowVerificationStep] =
         useState<boolean>(false);
+    const { t } = useTranslation();
 
     const modalConfig = useMemo<{
         title: string;
@@ -262,29 +264,32 @@ export default function TwoFactorSetupModal({
     }>(() => {
         if (twoFactorEnabled) {
             return {
-                title: 'Two-factor authentication enabled',
-                description:
+                title: t('Two-factor authentication enabled'),
+                description: t(
                     'Two-factor authentication is now enabled. Scan the QR code or enter the setup key in your authenticator app.',
-                buttonText: 'Close',
+                ),
+                buttonText: t('Close'),
             };
         }
 
         if (showVerificationStep) {
             return {
-                title: 'Verify authentication code',
-                description:
+                title: t('Verify authentication code'),
+                description: t(
                     'Enter the 6-digit code from your authenticator app',
-                buttonText: 'Continue',
+                ),
+                buttonText: t('Continue'),
             };
         }
 
         return {
-            title: 'Enable two-factor authentication',
-            description:
+            title: t('Enable two-factor authentication'),
+            description: t(
                 'To finish enabling two-factor authentication, scan the QR code or enter the setup key in your authenticator app',
-            buttonText: 'Continue',
+            ),
+            buttonText: t('Continue'),
         };
-    }, [twoFactorEnabled, showVerificationStep]);
+    }, [twoFactorEnabled, showVerificationStep, t]);
 
     const resetModalState = useCallback(() => {
         if (twoFactorEnabled) {

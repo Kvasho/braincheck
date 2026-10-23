@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Http\Controllers\Settings;
 
 use App\Http\Controllers\Controller;
@@ -9,6 +11,7 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Validation\Rules\Password;
 use Inertia\Inertia;
 use Inertia\Response;
+use Laravel\Fortify\Events\PasswordUpdatedViaController;
 use Laravel\Fortify\Features;
 
 class SecurityController extends Controller
@@ -58,6 +61,9 @@ class SecurityController extends Controller
         $request->user()->update([
             'password' => $request->password,
         ]);
+
+        // Fortify's own event for this, so the audit listener covers both password update paths.
+        PasswordUpdatedViaController::dispatch($request->user());
 
         Inertia::flash('toast', ['type' => 'success', 'message' => __('Password updated.')]);
 

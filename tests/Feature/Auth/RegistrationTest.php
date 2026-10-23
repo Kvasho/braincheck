@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Tests\Feature\Auth;
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -29,8 +31,8 @@ class RegistrationTest extends TestCase
         $response = $this->post(route('register.store'), [
             'name' => 'Test User',
             'email' => 'test@example.com',
-            'password' => 'password',
-            'password_confirmation' => 'password',
+            'password' => 'Str0ng-Passw0rd!',
+            'password_confirmation' => 'Str0ng-Passw0rd!',
         ]);
 
         $this->assertAuthenticated();

@@ -1,17 +1,19 @@
+import type { Permission, Role } from '@/types/authorization';
+
+/** Mirrors App\Http\Resources\AuthUserResource: keep both in sync. */
 export type User = {
     id: number;
     name: string;
     email: string;
     avatar?: string;
     email_verified_at: string | null;
-    two_factor_enabled?: boolean;
-    created_at: string;
-    updated_at: string;
-    [key: string]: unknown;
+    role: Role | null;
 };
 
 export type Auth = {
     user: User;
+    /** UI hint only: the backend enforces every permission. */
+    permissions: Permission[];
 };
 
 export type Passkey = {

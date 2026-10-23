@@ -10,4 +10,7 @@ parameters:
         - database/
         - routes/
 
+    # Stage 0 target: level 7, no baseline. Fix issues instead of ignoring them.
     level: 7
+
+    tmpDir: storage/framework/cache/phpstan

@@ -1,3 +1,14 @@
 export type * from './auth';
 export type * from './navigation';
 export type * from './ui';
+export type * from './authorization';
+export type * from './enums';
+export type * from './listing';
+export type * from './admin';
+export type * from './rich-text';
+export type * from './questions';
+export type * from './tests';
+export type * from './groups';
+export type * from './exams';
+export type * from './grading';
+export type * from './results';
